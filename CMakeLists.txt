@@ -33,4 +33,4 @@ set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(google_benchmark)
 
 add_subdirectory(work1)
-# add_subdirectory(work2)
+add_subdirectory(work2)
