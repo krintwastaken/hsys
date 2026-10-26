@@ -1,4 +1,8 @@
 #include <benchmark/benchmark.h>
+
+#include <complex>
+using std::arg;
+
 #include <Eigen/Dense>
 #include <cuda_runtime.h>
 #include "Vector.cuh"
@@ -13,11 +17,11 @@ static void BM_VecAdd_Eigen(benchmark::State& state) {
     Eigen::VectorXf c(n);
 
     for (auto _ : state) {
-        c = a + b;
+        c.noalias() = a + b;
         benchmark::DoNotOptimize(c.data());
     }
 
-    state.SetBytesProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(n * sizeof(float) * 3));
+    state.SetBytesProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(3 * n * sizeof(float)));
     state.SetItemsProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(n));
 }
 
@@ -49,19 +53,17 @@ static void BM_VecAdd_CUDA(benchmark::State& state) {
     check_cuda(cudaEventDestroy(start));
     check_cuda(cudaEventDestroy(stop));
 
-    state.SetBytesProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(n * sizeof(float) * 3));
+    state.SetBytesProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(3 * n * sizeof(float)));
     state.SetItemsProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(n));
 }
 
-BENCHMARK(BM_VecAdd_Eigen)
-    ->RangeMultiplier(8)
-    ->Range(8, 16777216)
-    ->Unit(benchmark::kMillisecond);
+static void CustomArguments(benchmark::internal::Benchmark* b) {
+    for (int i = 1; i <= 8; ++i) {
+        b->Arg(1 << (3 * i));
+    }
+}
 
-BENCHMARK(BM_VecAdd_CUDA)
-    ->RangeMultiplier(8)
-    ->Range(8, 16777216)
-    ->UseManualTime()
-    ->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_VecAdd_Eigen)->Apply(CustomArguments)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_VecAdd_CUDA)->Apply(CustomArguments)->UseManualTime()->Unit(benchmark::kMillisecond);
 
 BENCHMARK_MAIN();

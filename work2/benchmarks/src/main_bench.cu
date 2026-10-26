@@ -1,9 +1,13 @@
 #include <benchmark/benchmark.h>
+
+#include <complex>
+using std::arg;
+
 #include <Eigen/Dense>
 #include <cuda_runtime.h>
 #include "Matrix.cuh"
 #include "Kernel.cuh"
-#include "CudaCheck.cuh"
+#include "../../../work1/core/include/CudaCheck.cuh"
 
 using RowMatrixXf = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 

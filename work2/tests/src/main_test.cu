@@ -1,4 +1,8 @@
 #include <gtest/gtest.h>
+
+#include <complex>
+using std::arg;
+
 #include <Eigen/Dense>
 #include <random>
 #include <tuple>
