@@ -11,7 +11,30 @@ add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:--diag-suppress=940,20012>)
 
 find_package(CUDAToolkit REQUIRED)
-find_package(Eigen3 5.0.1 REQUIRED NO_MODULE)
+find_package(Eigen3 3.3 QUIET CONFIG)
+
+if(NOT TARGET Eigen3::Eigen)
+    find_path(EIGEN3_INCLUDE_DIR
+        NAMES Eigen/Dense
+        PATHS
+            "C:/Users/krintwastaken/My stuff/ucheba/GVS/vcpkg/installed/x64-windows/include"
+            "C:/Users/krintwastaken/My stuff/ucheba/GVS/vcpkg/installed/x86-windows/include"
+            "C:/Users/krintwastaken/My stuff/ucheba/GVS/vcpkg/buildtrees/eigen3/src/5.0.1-d487a628b0.clean"
+    )
+
+    if(EIGEN3_INCLUDE_DIR)
+        add_library(Eigen3::Eigen INTERFACE IMPORTED)
+        target_include_directories(Eigen3::Eigen INTERFACE "${EIGEN3_INCLUDE_DIR}")
+        message(STATUS "Found Eigen3 headers: ${EIGEN3_INCLUDE_DIR}")
+    else()
+        include(FetchContent)
+        FetchContent_Declare(
+            Eigen3
+            URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
+        )
+        FetchContent_MakeAvailable(Eigen3)
+    endif()
+endif()
 
 include(FetchContent)
 

@@ -2,7 +2,7 @@
 
 #include <cstddef>
 #include <memory>
-#include "Data.cuh"
+#include "../../../work1/core/include/Data.cuh"
 #include "MatrixView.cuh"
 
 template <typename AtomT>

@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
+
+#include <complex>
+using std::arg;
+
 #include <Eigen/Dense>
-#include <vector>
 #include <random>
 #include "Vector.cuh"
 

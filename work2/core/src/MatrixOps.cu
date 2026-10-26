@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include "Matrix.cuh"
 #include "Kernel.cuh"
-#include "CudaCheck.cuh"
+#include "../../../work1/core/include/CudaCheck.cuh"
 
 template <typename AtomT>
 Matrix<AtomT> operator*(const Matrix<AtomT>& a, const Matrix<AtomT>& b) {
