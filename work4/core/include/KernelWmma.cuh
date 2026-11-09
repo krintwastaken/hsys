@@ -14,9 +14,9 @@ constexpr unsigned int WMMA_K = 16;
 
 constexpr unsigned int WARPS_X = 4;
 constexpr unsigned int WARPS_Y = 2;
-constexpr unsigned int BLOCK_ITEMS_X = WMMA_N * WARPS_X; // 64
-constexpr unsigned int BLOCK_ITEMS_Y = WMMA_M * WARPS_Y; // 32
 
+// Шаблонизация размерами тайла обеспечивает COMDAT-компоновку и предотвращает ошибку LNK2005
+template <unsigned int BLOCK_ITEMS_X = 64, unsigned int BLOCK_ITEMS_Y = 32>
 __global__ void kernel_matmul_wmma(MatrixView<half> a, MatrixView<half> b, MatrixView<half> c) {
     const unsigned int tid = threadIdx.y * blockDim.x + threadIdx.x;
     const unsigned int warp_id = tid / 32;
@@ -25,7 +25,7 @@ __global__ void kernel_matmul_wmma(MatrixView<half> a, MatrixView<half> b, Matri
         return;
     }
 
-    // Раскладка варпов внутри блока по Рис. 1:
+    // Раскладка 8 варпов внутри блока 4x2 по Рис. 1 методички:
     // Строка 0: Warp0, Warp2, Warp4, Warp6
     // Строка 1: Warp1, Warp3, Warp5, Warp7
     const unsigned int warp_row = warp_id % WARPS_Y;

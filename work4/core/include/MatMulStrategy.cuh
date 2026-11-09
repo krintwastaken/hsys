@@ -18,13 +18,16 @@ public:
 class WmmaMatMulStrategy : public IMatMulStrategy<half> {
 public:
     void multiply(MatrixView<half> a, MatrixView<half> b, MatrixView<half> c) const override {
+        constexpr unsigned int BLOCK_ITEMS_X = 64;
+        constexpr unsigned int BLOCK_ITEMS_Y = 32;
+
         dim3 block(32, 8); // 8 варпов (256 нитей)
         dim3 grid(
             static_cast<unsigned int>((c.ncols() + BLOCK_ITEMS_X - 1) / BLOCK_ITEMS_X),
             static_cast<unsigned int>((c.nrows() + BLOCK_ITEMS_Y - 1) / BLOCK_ITEMS_Y)
         );
 
-        kernel_matmul_wmma<<<grid, block>>>(a, b, c);
+        kernel_matmul_wmma<BLOCK_ITEMS_X, BLOCK_ITEMS_Y><<<grid, block>>>(a, b, c);
         check_cuda(cudaGetLastError());
         check_cuda(cudaDeviceSynchronize());
     }

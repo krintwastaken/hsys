@@ -15,7 +15,7 @@ static void run_matmul_wmma(MatrixView<half> a, MatrixView<half> b, MatrixView<h
         static_cast<unsigned int>((c.ncols() + BLOCK_ITEMS_X - 1) / BLOCK_ITEMS_X),
         static_cast<unsigned int>((c.nrows() + BLOCK_ITEMS_Y - 1) / BLOCK_ITEMS_Y)
     );
-    kernel_matmul_wmma<<<grid, block>>>(a, b, c);
+    kernel_matmul_wmma<BLOCK_ITEMS_X, BLOCK_ITEMS_Y><<<grid, block>>>(a, b, c);
 }
 
 static void run_matmul_shmem(MatrixView<half> a, MatrixView<half> b, MatrixView<half> c) {
