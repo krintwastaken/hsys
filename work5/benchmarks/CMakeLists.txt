@@ -1,0 +1,10 @@
+add_executable(work5_benchmarks
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main_bench.cu
+)
+
+target_link_libraries(work5_benchmarks
+    PRIVATE
+        work5_core
+        benchmark::benchmark
+        CUDA::cudart
+)
