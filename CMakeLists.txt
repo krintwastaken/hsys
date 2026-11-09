@@ -8,7 +8,9 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_ARCHITECTURES native)
 
 add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
-add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:--diag-suppress=940,20012>)
+add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:--diag-suppress=940,20011,20012,20014>)
+add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/wd4068>)
+add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=/wd4068>)
 
 find_package(CUDAToolkit REQUIRED)
 
@@ -56,3 +58,4 @@ FetchContent_MakeAvailable(google_benchmark)
 add_subdirectory(work1)
 add_subdirectory(work2)
 add_subdirectory(work3)
+add_subdirectory(work4)
